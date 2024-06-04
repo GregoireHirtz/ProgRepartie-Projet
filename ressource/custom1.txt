@@ -1,0 +1,36 @@
+// DOC
+// mat : R G B ambiant diffusion speculaire coeff (https://en.wikipedia.org/wiki/Phong_reflection_model)
+// poly : NB * [X Y Z]
+// sphere : X Y Z R
+
+
+// source
+source 2.3 2.3 -6.3   1 1 1
+
+// ----------------------------------------------------- boîte
+// sol
+materiau 0.7 0.7 0.7   0.45 0.45 0.45   0 0 0   0.5
+polygone 4   -2.5 -2.5 -1.5   -2.5 -2.5 -6.5   2.5 -2.5 -6.5   2.5 -2.5 -1.5
+
+// mur gauche
+materiau 0.7 0.1 0.1   0.45 0.05 0.05   0 0 0   0.5
+polygone 4   -2.5 -2.5 -1.5   -2.5 -2.5 -6.5   -2.5 2.5 -6.5   -2.5 2.5 -1.5
+
+// plafond
+materiau 0.1 0.1 0.1   0.05 0.05 0.05   0 0 0   0.5
+polygone 4   -2.5 4 -1.5   -2.5 4 -6.5   2.5 2.5 -6.5   2.5 2.5 -1.5
+
+// mur droite
+materiau 0.1 0.1 0.7   0.05 0.05 0.45   0.1 0.1 0.1  0.5
+polygone 4   2.5 -2.5 -1.5   2.5 -2.5 -6.5   2.5 2.5 -6.5   2.5 2.5 -1.5
+
+// mur du fond
+materiau 0.1 0.7 0.1   0.05 0.45 0.05   0 0 0   0.5
+polygone 4   -2.5 -2.5 -6.5   -2.5 2.5 -6.5   2.5 2.5 -6.5   2.5 -2.5 -6.5
+
+// cercle
+materiau 0.2 0.2 0.2   0.1 0.1 0.1   0.1 0.1 0.1   0.5
+sphere  0 -2.5 -4  1
+
+materiau 0.2 0.2 0.2   0.1 0.1 0.1   0.1 0.1 0.1   0.5
+sphere  1 2.5 -5  1
