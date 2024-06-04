@@ -1,5 +1,4 @@
 package raytracer;
-import java.awt.Color;
 import java.io.*;
 /** Classe abstraite commune à tous les primitives géométriques pouvant
  * apparaître dans une scène. Cette classe ne contient aucune information
