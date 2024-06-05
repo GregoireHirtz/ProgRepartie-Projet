@@ -4,9 +4,22 @@ import interfaces.ServiceCalcul;
 import raytracer.Image;
 import raytracer.Scene;
 
+import java.time.Duration;
+import java.time.Instant;
+
 public class ClientCalcul implements ServiceCalcul {
     @Override
-    public Image effectuerCalcul(Scene scene, int x, int y, int x2, int y2) {
-        return null;
+    public Image effectuerCalcul(Scene scene, int x, int y, int width, int height) {
+        Instant debut = Instant.now();
+        System.out.println("Calcul de l'image :\n - Coordonnées : "+ x +"," + y
+                + "\n - Taille " + width + "x" + height);
+        Image image = scene.compute(x, y, width, height);
+        Instant fin = Instant.now();
+
+        long duree = Duration.between(debut, fin).toMillis();
+
+        System.out.println("Image calculée en :"+duree+" ms");
+
+        return image;
     }
 }
