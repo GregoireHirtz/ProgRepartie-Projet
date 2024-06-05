@@ -2,7 +2,6 @@ package serveur;
 
 import interfaces.ServiceCalcul;
 import interfaces.ServiceRayTracing;
-import raytracer.Disp;
 import raytracer.Image;
 import raytracer.Scene;
 
@@ -12,6 +11,7 @@ import java.rmi.server.ServerNotActiveException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
@@ -53,10 +53,13 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
     public Image continuerCalcul(CalculScene calculScene, Image image) {
         ArrayList<Thread> threads = new ArrayList<>();
+        TreeMap<Calcul, Image> resultats = new TreeMap<>();
 
         // Attend qu'il y ait un service de calcul disponible
         while (calculateurs.size() == 0) {}
 
+        // Lance les threads de calcul
+        // Chaque thread récupère un calcul à effectuer puis renvoie le résultat
         ArrayList<ServiceCalcul> calculateurs_clone = (ArrayList<ServiceCalcul>)calculateurs.clone();
         for(ServiceCalcul serviceCalcul : calculateurs_clone) {
             Thread thread = new Thread(() -> {
@@ -64,8 +67,8 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                 try{
                     while (true) {
                         calcul = calculScene.getCalcul();
-                        Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.w, calcul.h);
-                        // TODO -> Ajouter l'image au resultat
+                        Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.largeur, calcul.hauteur);
+                        resultats.put(calcul, temp_image);
                     }
                 }
                 catch(RemoteException e) {
@@ -85,12 +88,23 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
             thread.start();
         }
 
+        // On attend que tout les threads de calcul soit terminer
         for(Thread thread : threads) {
             try {
                 thread.join();
             } catch (InterruptedException e) {}
         }
 
+        // Une fois tout les threads terminé on reforme l'image de résultat
+        for(Calcul calcul : resultats.keySet()) {
+            for(int x = 0; x < calcul.largeur; x ++) {
+                for(int y = 0; y < calcul.hauteur; y++) {
+                    image.setPixel(calcul.x + x, calcul.y + y, resultats.get(calcul).getPixel(x, y));
+                }
+            }
+        }
+
+        // Si les calculs n'ont pas tous été effectuer on recommence
         if(calculScene.getCalculsRestants() > 0) {
             image = continuerCalcul(calculScene, image);
         }
