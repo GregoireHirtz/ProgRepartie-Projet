@@ -45,7 +45,7 @@ public class LancerClient {
         Scene scene = new Scene(fichier_description, largeur, hauteur);
 
         System.out.println("Calcul de la scene par le service...");
-        Image image = serveur.calculerScene(scene);
+        Image image = serveur.calculerScene(scene, largeur, hauteur);
 
         System.out.println("Terminer !");
         Disp disp = new Disp("Raytracer", largeur, hauteur);
