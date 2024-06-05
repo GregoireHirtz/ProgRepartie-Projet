@@ -6,6 +6,7 @@ import raytracer.Disp;
 import raytracer.Image;
 import raytracer.Scene;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ServeurCentral implements ServiceRayTracing {
@@ -18,23 +19,28 @@ public class ServeurCentral implements ServiceRayTracing {
      * @return
      */
     @Override
-    public Image calculerScene(Scene scene, int hauteur, int largeur) {
+    public Image calculerScene(Scene scene, int largeur, int hauteur) {
+        CalculScene calculScene = new CalculScene(scene, hauteur, largeur);
+        Image res = new Image(largeur, hauteur);
 
-        ArrayList<Calcul> blocs = new ArrayList<>();
-
-        for (int i=0; i<=largeur; i+=99){
-            for (int j=0; j<=hauteur; j+=99){
-                blocs.add(new Calcul(scene, i, j));
-            }
+        for(ServiceCalcul serviceCalcul : calculateurs) {
+            new Thread(() -> {
+                Calcul calcul = null;
+                try{
+                    calcul = calculScene.getCalcul();
+                    Image image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.w, calcul.h);
+                    // TODO -> Ajouter l'image au resultat
+                }
+                catch(RemoteException e) {
+                    if(calcul != null) {
+                        calculScene.ajouterCalcul(calcul);
+                    }
+                }
+            }).start();
         }
 
-
+        return res;
     }
-
-    public synchronized Calcul getCalcul() {
-
-    }
-
 
 
     /**

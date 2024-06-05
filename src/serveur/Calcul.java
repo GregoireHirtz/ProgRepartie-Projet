@@ -4,14 +4,15 @@ import raytracer.Scene;
 
 public class Calcul {
 
-    private Scene scene;
-    private int x, y, w, h;
+    public Scene scene;
+    public int x, y, w, h;
 
-    public Calcul(Scene scene, int x, int y) {
+    public Calcul(Scene scene, int x, int y, int largeur, int hauteur) {
+        this.scene = scene;
         this.x = x;
         this.y = y;
-        this.w = x+=99;
-        this.h = y+=99;
+        this.w = largeur;
+        this.h = hauteur;
     }
 
 }
