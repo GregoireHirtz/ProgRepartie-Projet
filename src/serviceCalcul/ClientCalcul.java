@@ -4,12 +4,13 @@ import interfaces.ServiceCalcul;
 import raytracer.Image;
 import raytracer.Scene;
 
+import java.rmi.RemoteException;
 import java.time.Duration;
 import java.time.Instant;
 
 public class ClientCalcul implements ServiceCalcul {
     @Override
-    public Image effectuerCalcul(Scene scene, int x, int y, int width, int height) {
+    public Image effectuerCalcul(Scene scene, int x, int y, int width, int height) throws RemoteException {
         Instant debut = Instant.now();
         System.out.println("Calcul de l'image :\n - Coordonnées : "+ x +"," + y
                 + "\n - Taille " + width + "x" + height);
