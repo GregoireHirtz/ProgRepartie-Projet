@@ -7,9 +7,16 @@ import java.util.ArrayList;
 import static java.lang.Math.min;
 
 public class CalculScene {
-    ArrayList<Calcul> calculs;
+
+    public Scene scene;
+    public int hauteur, largeur;
+    private ArrayList<Calcul> calculs;
 
     public CalculScene(Scene scene, int hauteur, int largeur) {
+        this.scene = scene;
+        this.hauteur = hauteur;
+        this.largeur = largeur;
+
         this.calculs = new ArrayList<>();
 
         int l, h;
@@ -23,7 +30,7 @@ public class CalculScene {
         }
     }
 
-    public synchronized Calcul getCalcul() {
+    public synchronized Calcul getCalcul() throws IndexOutOfBoundsException{
         Calcul res = calculs.get(0);
         calculs.remove(0);
         return res;
@@ -31,5 +38,9 @@ public class CalculScene {
 
     public synchronized void ajouterCalcul(Calcul calcul) {
         calculs.add(calcul);
+    }
+
+    public int getCalculsRestants() {
+        return calculs.size();
     }
 }
