@@ -61,6 +61,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         // Lance les threads de calcul
         // Chaque thread récupère un calcul à effectuer puis renvoie le résultat
+        @SuppressWarnings("unchecked")
         ArrayList<ServiceCalcul> calculateurs_clone = (ArrayList<ServiceCalcul>)calculateurs.clone();
         for(ServiceCalcul serviceCalcul : calculateurs_clone) {
             Thread thread = new Thread(() -> {
