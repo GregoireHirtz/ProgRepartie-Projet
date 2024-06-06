@@ -34,7 +34,7 @@ public class LancerClientCalcul {
 
         try{
             serviceRayTracing.enregistrerServiceCalcul(serviceCalcul);
-            System.out.println("Le client a été enregistrer avec succès ! ");
+            System.out.println("Le service de calcul a été enregistrer avec succès ! ");
         } catch(RemoteException e) {System.out.println("Service de raytracing injoignable");}
     }
 }

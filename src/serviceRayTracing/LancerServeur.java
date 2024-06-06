@@ -25,6 +25,7 @@ public class LancerServeur {
         //Ajout du service dans l'annuaire
         ServiceRayTracing serviceRayTracing = (ServiceRayTracing) UnicastRemoteObject.exportObject(serveurCentral,0);
         reg.rebind("raytracer",serviceRayTracing);
+        System.out.println("Service \"raytracer\" enregistrer sur l'annuaire");
 
     }
 }
