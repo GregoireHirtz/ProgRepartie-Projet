@@ -9,4 +9,4 @@
 
 # Vidéo de présentation du projet :
 
-<video src='https://youtu.be/7qpFM2LC6QI' width=180> </video>
+![presentation](https://youtu.be/7qpFM2LC6QI)
