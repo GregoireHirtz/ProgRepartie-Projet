@@ -128,11 +128,16 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
         try {
             String clientHost = getClientHost();
 
-            if (service != null)
+            if (service == null) {
                 System.out.println("\u001B[31m" + clientHost + ": ServiceCalcul fourni == null \u001B[0m");
+                return;
+            }
 
-            if (calculateurs.contains(service))
+
+            if (calculateurs.contains(service)){
                 System.out.println("\u001B[31m" + clientHost + ": ServiceCalcul fourni déjà connu par le serveur central \u001B[0m");
+                return;
+            }
 
             calculateurs.add(service);
             System.out.println("\u001B[32m" + clientHost + ": Enregistrement \u001B[0m");
