@@ -73,7 +73,9 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                         if(calculScene.getCalculsRestants() > 0) {
                             calcul = calculScene.getCalcul();
                             Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.largeur, calcul.hauteur);
-                            resultats.put(calcul, temp_image);
+
+                            addImage(calcul, temp_image, resultats);
+                            //resultats.put(calcul, temp_image);
                         }
 
                         // Si on a effectué tous les calculs, on s'arrête
@@ -95,6 +97,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         // On attend que tout les threads de calcul soit terminer
         for(Thread thread : threads) {
+            System.out.println("THREEDDDDDDD");
             try {
                 thread.join();
             } catch (InterruptedException e) {}
@@ -149,5 +152,9 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
     public synchronized void retirerServiceCalcul(ServiceCalcul service) {
         calculateurs.remove(service);
+    }
+
+    public synchronized void addImage(Calcul calcul, Image temp_image, TreeMap<Calcul, Image> resultats) {
+        resultats.put(calcul, temp_image);
     }
 }
