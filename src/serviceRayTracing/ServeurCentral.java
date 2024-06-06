@@ -2,6 +2,7 @@ package serviceRayTracing;
 
 import interfaces.ServiceCalcul;
 import interfaces.ServiceRayTracing;
+import raytracer.Disp;
 import raytracer.Image;
 import raytracer.Scene;
 
@@ -30,15 +31,16 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
         try {
             // Notification de début
             String clientHost = getClientHost();
-            System.out.println("\u001B[37m" + clientHost + ": Lancement d'un calcul \u001B[36m" + largeur + "x" + hauteur + "\u001B[0m");
+            System.out.println(clientHost + ": Lancement d'un calcul \u001B[36m" + largeur + "x" + hauteur + "\u001B[0m");
 
             // Création du calcul
             CalculScene calculScene = new CalculScene(scene, hauteur, largeur);
             Image image = new Image(largeur, hauteur);
+            Disp display = new Disp(clientHost + " " + largeur + "x" + hauteur, largeur, hauteur);
 
             // Calcul
             Instant debut = Instant.now();
-            image = continuerCalcul(calculScene, image);
+            image = continuerCalcul(calculScene, image, display);
             Instant fin = Instant.now();
             long duree = Duration.between(debut, fin).toMillis();
 
@@ -55,7 +57,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
         return null;
     }
 
-    public Image continuerCalcul(CalculScene calculScene, Image image) {
+    public Image continuerCalcul(CalculScene calculScene, Image image, Disp display) {
         ArrayList<Thread> threads = new ArrayList<>();
         ConcurrentHashMap<Calcul, Image> resultats = new ConcurrentHashMap<>();
         calculScene.updateNbTotalCalculs();
@@ -83,6 +85,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                             lock.lock();
                             try {
                                 resultats.put(calcul, temp_image);
+                                display.setImage(temp_image, calcul.x, calcul.y);
                             } finally {
                                 lock.unlock();
                             }
@@ -125,7 +128,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         // [Sécurité] Si les calculs n'ont pas tous été effectuer on recommence
         if(calculScene.getCalculsRestants() > 0) {
-            image = continuerCalcul(calculScene, image);
+            image = continuerCalcul(calculScene, image, display);
         }
 
         return image;

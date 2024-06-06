@@ -40,7 +40,7 @@ public class LancerClient {
         System.out.println("Connecter !");
 
         System.out.println("Création de la scene a calculer...");
-        int largeur = 4048, hauteur = 4048;
+        int largeur = 1028, hauteur = 1028;
         String fichier_description= "ressource/custom1.txt";
         Scene scene = new Scene(fichier_description, largeur, hauteur);
 
