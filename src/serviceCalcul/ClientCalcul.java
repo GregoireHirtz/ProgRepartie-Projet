@@ -4,11 +4,12 @@ import interfaces.ServiceCalcul;
 import raytracer.Image;
 import raytracer.Scene;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.time.Duration;
 import java.time.Instant;
 
-public class ClientCalcul implements ServiceCalcul {
+public class ClientCalcul implements ServiceCalcul, Serializable {
     @Override
     public Image effectuerCalcul(Scene scene, int x, int y, int width, int height) throws RemoteException {
         Instant debut = Instant.now();
