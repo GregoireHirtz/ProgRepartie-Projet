@@ -1,4 +1,4 @@
-package serveur;
+package serviceRayTracing;
 
 import raytracer.Scene;
 
@@ -11,6 +11,7 @@ public class CalculScene {
     public Scene scene;
     public int hauteur, largeur;
     private ArrayList<Calcul> calculs;
+    private int nbTotalCalculs;
 
     public CalculScene(Scene scene, int hauteur, int largeur) {
         this.scene = scene;
@@ -28,6 +29,8 @@ public class CalculScene {
                 calculs.add(new Calcul(scene, i, j, l, h));
             }
         }
+
+        nbTotalCalculs = calculs.size();
     }
 
     public synchronized Calcul getCalcul() throws IndexOutOfBoundsException{
@@ -42,5 +45,8 @@ public class CalculScene {
 
     public int getCalculsRestants() {
         return calculs.size();
+    }
+    public int getNbTotalCalculs() {
+        return nbTotalCalculs;
     }
 }

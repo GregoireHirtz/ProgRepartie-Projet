@@ -1,4 +1,4 @@
-package serveur;
+package serviceRayTracing;
 
 import raytracer.Scene;
 

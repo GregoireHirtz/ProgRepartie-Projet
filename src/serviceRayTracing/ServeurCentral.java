@@ -1,4 +1,4 @@
-package serveur;
+package serviceRayTracing;
 
 import interfaces.ServiceCalcul;
 import interfaces.ServiceRayTracing;
@@ -66,9 +66,15 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                 Calcul calcul = null;
                 try{
                     while (true) {
-                        calcul = calculScene.getCalcul();
-                        Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.largeur, calcul.hauteur);
-                        resultats.put(calcul, temp_image);
+                        // Si il y a des calculs disponibles, on lance un nouveau calcul
+                        if(calculScene.getCalculsRestants() > 0) {
+                            calcul = calculScene.getCalcul();
+                            Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.largeur, calcul.hauteur);
+                            resultats.put(calcul, temp_image);
+                        }
+
+                        // Si on a effectué tous les calculs, on s'arrête
+                        if(resultats.size() == calculScene.getNbTotalCalculs()) break;
                     }
                 }
                 catch(RemoteException e) {
@@ -78,10 +84,6 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                         calculScene.ajouterCalcul(calcul);
                     }
                     retirerServiceCalcul(serviceCalcul);
-                }
-                catch(IndexOutOfBoundsException e) {
-                    // Tous les dessins ont été effectuer
-                    // Fermeture du thread
                 }
             });
             threads.add(thread);
@@ -104,7 +106,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
             }
         }
 
-        // Si les calculs n'ont pas tous été effectuer on recommence
+        // [Sécurité] Si les calculs n'ont pas tous été effectuer on recommence
         if(calculScene.getCalculsRestants() > 0) {
             image = continuerCalcul(calculScene, image);
         }
