@@ -46,6 +46,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         }catch (ServerNotActiveException e) {
             e.printStackTrace();
+            e.printStackTrace();
         }
 
         return null;
@@ -57,7 +58,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
         calculScene.updateNbTotalCalculs();
 
         // Attend qu'il y ait un service de calcul disponible
-        while (calculateurs.size() == 0) {}
+        while (calculateurs.isEmpty()) {}
 
         // Lance les threads de calcul
         // Chaque thread récupère un calcul à effectuer puis renvoie le résultat
@@ -110,6 +111,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         // [Sécurité] Si les calculs n'ont pas tous été effectuer on recommence
         if(calculScene.getCalculsRestants() > 0) {
+            System.out.println("Liste non vide");
             image = continuerCalcul(calculScene, image);
         }
 

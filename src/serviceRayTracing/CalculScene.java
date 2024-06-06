@@ -22,9 +22,9 @@ public class CalculScene {
 
         int l, h;
 
-        for (int i = 0; i <= largeur; i += l){
+        for (int i = 0; i <= largeur; i += 100){
             l = min(100, largeur - i);
-            for (int j = 0; j <= hauteur; j += h){
+            for (int j = 0; j <= hauteur; j += 100){
                 h = min(100, hauteur - j);
                 calculs.add(new Calcul(scene, i, j, l, h));
             }
