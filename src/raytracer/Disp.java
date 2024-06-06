@@ -18,7 +18,7 @@ public class Disp {
 
         //Create and set up the window.
         frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	frame.setSize(image.getWidth(), image.getHeight());
 	
 	// create the image 
