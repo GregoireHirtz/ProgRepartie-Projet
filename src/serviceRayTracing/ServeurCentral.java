@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -42,7 +43,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
             long duree = Duration.between(debut, fin).toMillis();
 
             // Notification de fin
-            System.out.print(clientHost + ": Calcul \u001B[36m" + largeur + "x" + hauteur + "\u001B[0m");
+            System.out.print(clientHost + ": Calcul \u001B[36m" + largeur + "x" + hauteur + "\u001B[0m ");
             System.out.println("terminer en \u001B[36m" + duree  +"\u001B[0m" + " ms");
             return image;
 
@@ -56,7 +57,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
     public Image continuerCalcul(CalculScene calculScene, Image image) {
         ArrayList<Thread> threads = new ArrayList<>();
-        TreeMap<Calcul, Image> resultats = new TreeMap<>();
+        ConcurrentHashMap<Calcul, Image> resultats = new ConcurrentHashMap<>();
         calculScene.updateNbTotalCalculs();
 
         // Attend qu'il y ait un service de calcul disponible
@@ -104,9 +105,10 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
             thread.start();
         }
 
+        while(resultats.size() != calculScene.getNbTotalCalculs()) {}
+
         // On attend que tout les threads de calcul soit terminer
         for(Thread thread : threads) {
-            System.out.println("THREEDDDDDDD");
             try {
                 thread.join();
             } catch (InterruptedException e) {}
@@ -123,7 +125,6 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
         // [Sécurité] Si les calculs n'ont pas tous été effectuer on recommence
         if(calculScene.getCalculsRestants() > 0) {
-            System.out.println("Liste non vide");
             image = continuerCalcul(calculScene, image);
         }
 
