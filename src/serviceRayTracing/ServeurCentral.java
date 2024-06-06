@@ -12,6 +12,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
@@ -64,6 +66,8 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
         // Chaque thread récupère un calcul à effectuer puis renvoie le résultat
         @SuppressWarnings("unchecked")
         ArrayList<ServiceCalcul> calculateurs_clone = (ArrayList<ServiceCalcul>)calculateurs.clone();
+
+        final Lock lock = new ReentrantLock();
         for(ServiceCalcul serviceCalcul : calculateurs_clone) {
             Thread thread = new Thread(() -> {
                 Calcul calcul = null;
@@ -74,8 +78,13 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                             calcul = calculScene.getCalcul();
                             Image temp_image = serviceCalcul.effectuerCalcul(calcul.scene, calcul.x, calcul.y, calcul.largeur, calcul.hauteur);
 
-                            addImage(calcul, temp_image, resultats);
-                            //resultats.put(calcul, temp_image);
+                            // Les résultats ne doivent être accessibles que par un thread à la fois
+                            lock.lock();
+                            try {
+                                resultats.put(calcul, temp_image);
+                            } finally {
+                                lock.unlock();
+                            }
                         }
 
                         // Si on a effectué tous les calculs, on s'arrête
@@ -152,9 +161,5 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
     public synchronized void retirerServiceCalcul(ServiceCalcul service) {
         calculateurs.remove(service);
-    }
-
-    public synchronized void addImage(Calcul calcul, Image temp_image, TreeMap<Calcul, Image> resultats) {
-        resultats.put(calcul, temp_image);
     }
 }
