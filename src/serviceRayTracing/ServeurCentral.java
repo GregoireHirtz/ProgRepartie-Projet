@@ -14,12 +14,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
 
-    private ArrayList<ServiceCalcul> calculateurs = new ArrayList<ServiceCalcul>();
+    private volatile ArrayList<ServiceCalcul> calculateurs = new ArrayList<ServiceCalcul>();
 
     /**
      * methode qui permet de demande au serveur central le calcul de la scene fournie
@@ -58,7 +59,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
     }
 
     public Image continuerCalcul(CalculScene calculScene, Image image, Disp display) {
-        ArrayList<Thread> threads = new ArrayList<>();
+        ConcurrentLinkedQueue<Thread> threads = new ConcurrentLinkedQueue<>();
         ConcurrentHashMap<Calcul, Image> resultats = new ConcurrentHashMap<>();
         calculScene.updateNbTotalCalculs();
 
@@ -102,13 +103,14 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
                         calculScene.ajouterCalcul(calcul);
                     }
                     retirerServiceCalcul(serviceCalcul);
+                    threads.remove(Thread.currentThread());
                 }
             });
             threads.add(thread);
             thread.start();
         }
 
-        while(resultats.size() != calculScene.getNbTotalCalculs()) {}
+        while(resultats.size() != calculScene.getNbTotalCalculs() && threads.size() > 0) {}
 
         // On attend que tout les threads de calcul soit terminer
         for(Thread thread : threads) {
