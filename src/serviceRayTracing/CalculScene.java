@@ -30,7 +30,7 @@ public class CalculScene {
             }
         }
 
-        nbTotalCalculs = calculs.size();
+        updateNbTotalCalculs();
     }
 
     public synchronized Calcul getCalcul() throws IndexOutOfBoundsException{
@@ -48,5 +48,9 @@ public class CalculScene {
     }
     public int getNbTotalCalculs() {
         return nbTotalCalculs;
+    }
+
+    public void updateNbTotalCalculs() {
+        nbTotalCalculs = calculs.size();
     }
 }

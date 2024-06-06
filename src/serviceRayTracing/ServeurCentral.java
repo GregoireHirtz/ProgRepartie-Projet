@@ -54,6 +54,7 @@ public class ServeurCentral extends RemoteServer implements ServiceRayTracing {
     public Image continuerCalcul(CalculScene calculScene, Image image) {
         ArrayList<Thread> threads = new ArrayList<>();
         TreeMap<Calcul, Image> resultats = new TreeMap<>();
+        calculScene.updateNbTotalCalculs();
 
         // Attend qu'il y ait un service de calcul disponible
         while (calculateurs.size() == 0) {}
