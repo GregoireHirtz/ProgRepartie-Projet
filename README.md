@@ -9,3 +9,8 @@
 
 # Vidéo de présentation du projet :
 https://youtu.be/7qpFM2LC6QI
+
+## Commande
+
+Dans le dossier d'un acteur (ex: /client/) <br>
+<code>javac *.java && java Lancer......</code>
